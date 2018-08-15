@@ -1,6 +1,6 @@
 # https://www.learnopencv.com/install-opencv3-on-ubuntu/
 
-FROM ubuntu:16.04
+FROM nvidia/cuda:9.2-cudnn7-runtime-ubuntu16.04
 
 ENV OPENCV_VERSION 3.4.2
 
@@ -70,7 +70,7 @@ RUN apt-get -y update && \
     && \
 
 # Clean
-    apt-get -y remove \
+   apt-get -y remove \
         python3-dev \
         libatlas-base-dev \
         gfortran \
