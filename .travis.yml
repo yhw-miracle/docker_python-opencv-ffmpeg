@@ -16,7 +16,7 @@ matrix:
   - name: "py3, cuda"
     env: PY_VER=py3 CUDA="-cuda"
 
-before_install:
+install:
   - docker build -t ubuntu-$PY_VER$CUDA -f Dockerfile$CUDA-$PY_VER .
 
 script:
