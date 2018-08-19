@@ -1,0 +1,25 @@
+sudo: required
+
+language: python
+
+services:
+  - docker
+
+matrix:
+  include:
+  - name: "py2"
+    env: PY_VER=py2 CUDA=""
+  - name: "py2, cuda"
+    env: PY_VER=py2 CUDA="-cuda"
+  - name: "py3"
+    env: PY_VER=py3 CUDA=""
+  - name: "py3, cuda"
+    env: PY_VER=py3 CUDA="-cuda"
+
+before_install:
+  - docker build -t ubuntu-$PY_VER$CUDA -f Dockerfile$CUDA-$PY_VER .
+
+script:
+  - docker images
+  - docker run -i -t ubuntu-$PY_VER$CUDA python --version
+
