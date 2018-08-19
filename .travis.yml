@@ -8,18 +8,18 @@ services:
 matrix:
   include:
   - name: "py2"
-    env: PY_VER=py2 CUDA=""
+    env: PY_VER=2 CUDA=""
   - name: "py2, cuda"
-    env: PY_VER=py2 CUDA="-cuda"
+    env: PY_VER=2 CUDA="-cuda"
   - name: "py3"
-    env: PY_VER=py3 CUDA=""
+    env: PY_VER=3 CUDA=""
   - name: "py3, cuda"
-    env: PY_VER=py3 CUDA="-cuda"
+    env: PY_VER=3 CUDA="-cuda"
 
 install:
-  - docker build -t ubuntu-$PY_VER$CUDA -f Dockerfile$CUDA-$PY_VER .
+  - docker build -t ubuntu-py$PY_VER$CUDA -f Dockerfile$CUDA-py$PY_VER .
 
 script:
   - docker images
-  - docker run -i -t ubuntu-$PY_VER$CUDA python --version
+  - docker run -i -t ubuntu-py$PY_VER$CUDA python --version
 

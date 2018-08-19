@@ -16,6 +16,7 @@ RUN apt-get -y update && \
         cmake \
         libtbb2 \
         gfortran \
+        apt-utils \
         pkg-config \
         checkinstall \
         qt5-default \

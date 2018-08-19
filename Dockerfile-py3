@@ -15,6 +15,7 @@ RUN apt-get -y update && \
         cmake \
         libtbb2 \
         gfortran \
+        apt-utils \
         pkg-config \
         checkinstall \
         qt5-default \
@@ -42,6 +43,7 @@ RUN apt-get -y update && \
         libtbb-dev \
         zlib1g-dev \
     && \
+    alias python=python3 && \
 
 # install python dependencies
     wget https://bootstrap.pypa.io/get-pip.py --progress=bar:force:noscroll && \

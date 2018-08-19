@@ -1,0 +1,47 @@
+version: 2.0
+
+jobs:
+  Py2:
+    machine: true
+    steps:
+      - checkout
+      - run: docker build -t ubuntu-py2 -f Dockerfile-py2 .
+      - run: docker images
+      - run: docker run -i -t ubuntu-py2 python --version
+
+  Py3:
+    machine: true
+    steps:
+      - checkout
+      - run: docker build -t ubuntu-py3 -f Dockerfile-py3 .
+      - run: docker images
+      - run: docker run -i -t ubuntu-py3 python --version
+
+  Py2-CUDA:
+    machine: true
+    steps:
+      - checkout
+      - run:
+          command: docker build -t ubuntu-cuda-py2 -f Dockerfile-cuda-py2 .
+          no_output_timeout: 60m
+      - run: docker images
+      - run: docker run -i -t ubuntu-cuda-py2 python --version
+
+  Py3-CUDA:
+    machine: true
+    steps:
+      - checkout
+      - run:
+          command: docker build -t ubuntu-cuda-py3 -f Dockerfile-cuda-py3 .
+          no_output_timeout: 60m
+      - run: docker images
+      - run: docker run -i -t ubuntu-cuda-py3 python --version
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - Py2
+      - Py3
+      - Py2-CUDA
+      - Py3-CUDA
