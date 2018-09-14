@@ -9,7 +9,6 @@ RUN apt-get -y update && \
     apt-get -y install \
         python2.7 \
         python2.7-dev \
-        git \
         wget \
         unzip \
         cmake \
@@ -42,6 +41,9 @@ RUN apt-get -y update && \
         libeigen3-dev \
         libtbb-dev \
         zlib1g-dev \
+        libsm6 \
+        libxext6 \
+        libxrender1 \
     && \
 
 # install python dependencies
@@ -90,9 +92,8 @@ RUN apt-get -y update && \
     ldconfig \
     && \
 
-# Clean
+# cleaning
     apt-get -y remove \
-        python2.7-dev \
         cmake \
         gfortran \
         apt-utils \
@@ -121,8 +122,12 @@ RUN apt-get -y update && \
         libtbb-dev \
         zlib1g-dev \
     && \
+    apt-get autoremove -y && \
     apt-get clean && \
-    rm -rf /opencv /opencv_contrib /var/lib/apt/lists/*
+    rm -rf /opencv /opencv_contrib /var/lib/apt/lists/* \
+    && \
+
+    update-alternatives --install /usr/bin/python python /usr/bin/python2.7 1
 
 # Define default command.
 CMD ["python --version"]

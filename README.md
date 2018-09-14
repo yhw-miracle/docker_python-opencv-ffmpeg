@@ -42,3 +42,5 @@ docker run --rm -it -v $PWD:/srv borda/docker_python-opencv-ffmpeg python
 # truncated for transparency
 (True, array([[[ 0, 43, 37], ...]], dtype=uint8))
 ```
+
+Note, server usually doe not have webcam :)

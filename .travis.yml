@@ -9,12 +9,12 @@ matrix:
   include:
   - name: "py2"
     env: PY_VER=2 CUDA=""
-  - name: "py2, cuda"
-    env: PY_VER=2 CUDA="-cuda"
+#  - name: "py2, cuda"
+#    env: PY_VER=2 CUDA="-cuda"
   - name: "py3"
     env: PY_VER=3 CUDA=""
-  - name: "py3, cuda"
-    env: PY_VER=3 CUDA="-cuda"
+#  - name: "py3, cuda"
+#    env: PY_VER=3 CUDA="-cuda"
 
 install:
   - docker build -t ubuntu-py$PY_VER$CUDA -f Dockerfile$CUDA-py$PY_VER .
