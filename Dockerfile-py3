@@ -1,6 +1,6 @@
 # https://www.learnopencv.com/install-opencv3-on-ubuntu/
 
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
 ENV OPENCV_VERSION 3.4.2
 
@@ -20,16 +20,14 @@ RUN apt-get -y update && \
         qt5-default \
         build-essential \
         libatlas-base-dev \
-        libjasper-dev \
         libgtk2.0-dev \
         libavcodec-dev \
         libavformat-dev \
         libavutil-dev \
         libswscale-dev \
         libjpeg8-dev \
-        libpng12-dev \
+        libpng-dev \
         libtiff5-dev \
-        libjasper-dev \
         libdc1394-22-dev \
         libxine2-dev \
         libv4l-dev \
@@ -49,9 +47,10 @@ RUN apt-get -y update && \
 
 # install python dependencies
     wget https://bootstrap.pypa.io/get-pip.py --progress=bar:force:noscroll && \
-    python3 get-pip.py && \
+    python get-pip.py && \
     rm get-pip.py && \
-    pip3 install numpy \
+    alias pip=pip3 && \
+    pip install numpy \
     && \
 
 # Install OpenCV
@@ -91,7 +90,8 @@ RUN apt-get -y update && \
     cd /opencv/build && \
     make -j$(nproc) && \
     make install && \
-    ldconfig \
+    ldconfig && \
+    pip install opencv-python \
     && \
 
 # cleaning
@@ -103,7 +103,6 @@ RUN apt-get -y update && \
         checkinstall \
         build-essential \
         libatlas-base-dev \
-        libjasper-dev \
         libgtk2.0-dev \
         libavcodec-dev \
         libavformat-dev \
@@ -112,7 +111,6 @@ RUN apt-get -y update && \
         libjpeg8-dev \
         libpng12-dev \
         libtiff5-dev \
-        libjasper-dev \
         libdc1394-22-dev \
         libxine2-dev \
         libv4l-dev \
