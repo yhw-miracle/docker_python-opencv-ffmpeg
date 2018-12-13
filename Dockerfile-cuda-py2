@@ -3,7 +3,7 @@
 
 FROM nvidia/cuda:9.2-cudnn7-devel-ubuntu18.04
 
-ENV OPENCV_VERSION 3.4.2
+ENV OPENCV_VERSION 4.0.1
 
 # Install all dependencies for OpenCV
 RUN apt-get -y update && \
@@ -48,9 +48,7 @@ RUN apt-get -y update && \
 # install python dependencies
     wget https://bootstrap.pypa.io/get-pip.py --progress=bar:force:noscroll && \
     python get-pip.py && \
-    rm get-pip.py && \
-    pip install numpy \
-    && \
+    pip install numpy && \
 
 # Install OpenCV
     wget https://github.com/opencv/opencv/archive/$OPENCV_VERSION.zip -O opencv.zip --progress=bar:force:noscroll && \
@@ -60,8 +58,7 @@ RUN apt-get -y update && \
     wget https://github.com/opencv/opencv_contrib/archive/$OPENCV_VERSION.zip -O opencv_contrib.zip --progress=bar:force:noscroll && \
     unzip -q opencv_contrib.zip && \
     mv /opencv_contrib-$OPENCV_VERSION /opencv_contrib && \
-    rm opencv_contrib.zip \
-    && \
+    rm opencv_contrib.zip && \
 
 # Prepare build
     mkdir /opencv/build && \
@@ -95,11 +92,10 @@ RUN apt-get -y update && \
     make -j$(nproc) && \
     make install && \
     ldconfig && \
-    pip install opencv-python \
-    && \
 
 # cleaning
    apt-get -y remove \
+        unzip \
         cmake \
         gfortran \
         apt-utils \
@@ -128,10 +124,17 @@ RUN apt-get -y update && \
     && \
     apt-get autoremove -y && \
     apt-get clean && \
-    rm -rf /opencv /opencv_contrib /var/lib/apt/lists/* \
+    rm -rf /opencv /opencv_contrib /var/lib/apt/lists/*
+
+# Set the default python and install PIP packages
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python2.7 1 && \
+    wget https://bootstrap.pypa.io/get-pip.py --progress=bar:force:noscroll && \
+    python get-pip.py && \
+    rm get-pip.py && \
+    pip install opencv-python \
+                opencv-contrib-python \
     && \
 
-    update-alternatives --install /usr/bin/python python /usr/bin/python2.7 1
-
-# Define default command.
-CMD ["python --version"]
+# Call default command.
+    pip --version && \
+    python -c "import cv2 ; print(cv2.__version__)"
