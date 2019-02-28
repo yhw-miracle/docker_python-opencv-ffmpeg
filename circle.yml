@@ -5,37 +5,33 @@ jobs:
     machine: true
     steps:
       - checkout
-      - run: docker build -t ubuntu-py2 -f Dockerfile-py2 .
-      - run: docker images
-      - run: docker run -i -t ubuntu-py2 python --version
+      - run: docker build -t ubuntu-py2 -f Dockerfile --build-arg python_version=2.7 .
+      - run: docker images && docker run -i -t ubuntu-py2 python -c "import sys, cv2 ; print(sys.version) ; print(cv2.__version__)"
 
   Py3:
     machine: true
     steps:
       - checkout
-      - run: docker build -t ubuntu-py3 -f Dockerfile-py3 .
-      - run: docker images
-      - run: docker run -i -t ubuntu-py3 python --version
+      - run: docker build -t ubuntu-py3 -f Dockerfile --build-arg python_version=3.6 .
+      - run: docker images && docker run -i -t ubuntu-py3 python -c "import sys, cv2 ; print(sys.version) ; print(cv2.__version__)"
 
   Py2-CUDA:
     machine: true
     steps:
       - checkout
       - run:
-          command: docker build -t ubuntu-cuda-py2 -f Dockerfile-cuda-py2 .
+          command: docker build -t ubuntu-cuda-py2 -f Dockerfile_cuda --build-arg python_version=2.7 .
           no_output_timeout: 60m
-      - run: docker images
-      - run: docker run -i -t ubuntu-cuda-py2 python --version
+      - run: docker images && docker run -i -t ubuntu-cuda-py2 python -c "import sys, cv2 ; print(sys.version) ; print(cv2.__version__)"
 
   Py3-CUDA:
     machine: true
     steps:
       - checkout
       - run:
-          command: docker build -t ubuntu-cuda-py3 -f Dockerfile-cuda-py3 .
+          command: docker build -t ubuntu-cuda-py3 -f Dockerfile_cuda --build-arg python_version=3.6 .
           no_output_timeout: 60m
-      - run: docker images
-      - run: docker run -i -t ubuntu-cuda-py3 python --version
+      - run: docker images && docker run -i -t ubuntu-cuda-py3 python -c "import sys, cv2 ; print(sys.version) ; print(cv2.__version__)"
 
 workflows:
   version: 2

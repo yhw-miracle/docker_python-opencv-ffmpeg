@@ -8,18 +8,21 @@ services:
 matrix:
   include:
   - name: "py2"
-    env: PY_VER=2 CUDA=""
+    env: PY_VER=2.7 CUDA=""
 #  - name: "py2, cuda"
-#    env: PY_VER=2 CUDA="-cuda"
-  - name: "py3"
-    env: PY_VER=3 CUDA=""
+#    env: PY_VER=2.7 CUDA="_cuda"
+  - name: "py36"
+    env: PY_VER=3.6 CUDA=""
+  - name: "py37"
+    env: PY_VER=3.7 CUDA=""
 #  - name: "py3, cuda"
-#    env: PY_VER=3 CUDA="-cuda"
+#    env: PY_VER=3.6 CUDA="_cuda"
 
 install:
-  - docker build -t ubuntu-py$PY_VER$CUDA -f Dockerfile$CUDA-py$PY_VER .
+  - docker build -t ubuntu-py$PY_VER$CUDA -f Dockerfile$CUDA --build-arg python_version=$PY_VER .
 
 script:
   - docker images
-  - docker run -i -t ubuntu-py$PY_VER$CUDA python --version
+  - docker run -i -t ubuntu-py$PY_VER$CUDA pip --version
+  - docker run -i -t ubuntu-py$PY_VER$CUDA python -c "import cv2 ; print(cv2.__version__)"
 

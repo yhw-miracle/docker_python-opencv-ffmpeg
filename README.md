@@ -5,10 +5,8 @@ Repository for clean Dockerfile containing [FFmpeg](https://www.ffmpeg.org/), [O
 
 ## Tags
 
-* `:py2` Python 2.7, OpenCV 4.0.1, FFmpeg  
-* `:py3` Python 3.6, OpenCV 4.0.1, FFmpeg  
-* `:cuda-py2` Python 2.7, OpenCV 4.0.1, FFmpeg with CUDA 9.2 support  
-* `:cuda-py3` Python 3.6, OpenCV 4.0.1, FFmpeg with CUDA 9.2 support  
+* `:base` Python 2.x/3.x, OpenCV 4.0.1, FFmpeg
+* `:cuda` Python 2.x/3.x, OpenCV 4.0.1, FFmpeg with CUDA 9.2 support
 
 
 ## Build
@@ -19,16 +17,16 @@ Repository for clean Dockerfile containing [FFmpeg](https://www.ffmpeg.org/), [O
 First you need to install docker on your local computer, see following [tutorial](https://docs.docker.com/install/linux/docker-ce/ubuntu/#set-up-the-repository). Note, for running the docker properly you have be logged as superuser otherwise you will face many partial issues which sometimes does not make much sense.
 
 You can build it on your own, note it takes lots of time, be prepared.
-``` bash
+```bash
 git clone <git-repository>
 cd docker_python-opencv-ffmpeg
-docker image build -t python-opencv-ffmpeg:py3 -f Dockerfile-py3 .
+docker image build -t python-opencv-ffmpeg:py36 -f Dockerfile --build-arg python_version=3.6 .
 ```
 To build other versions, select different Dockerfile.
 ```bash
 docker image list
-docker run --rm -it python-opencv-ffmpeg:py3 bash
-docker image rm python-opencv-ffmpeg:py3
+docker run --rm -it python-opencv-ffmpeg:py36 bash
+docker image rm python-opencv-ffmpeg:py36
 ```
 
 Other option is using already build image from DockerHub which is significantly faster. it basically download the already build image.
