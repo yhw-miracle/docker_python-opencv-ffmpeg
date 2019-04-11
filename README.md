@@ -5,8 +5,8 @@ Repository for clean Dockerfile containing [FFmpeg](https://www.ffmpeg.org/), [O
 
 ## Tags
 
-* `:base` Python 2.x/3.x, OpenCV 4.0.1, FFmpeg
-* `:cuda` Python 2.x/3.x, OpenCV 4.0.1, FFmpeg with CUDA 9.2 support
+* `:base` Python 2.x/3.x, OpenCV 4.1.0, FFmpeg
+* `:cuda` Python 2.x/3.x, OpenCV 4.1.0, FFmpeg with CUDA 9.2 support
 
 
 ## Build

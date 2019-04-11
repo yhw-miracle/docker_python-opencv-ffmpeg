@@ -3,7 +3,7 @@
 FROM ubuntu:18.04
 
 ARG python_version=3.6
-ENV OPENCV_VERSION 4.0.1
+ENV OPENCV_VERSION 4.1.0
 
 # Install all dependencies for OpenCV
 RUN apt-get -y update && \

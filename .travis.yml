@@ -9,13 +9,15 @@ matrix:
   include:
   - name: "py2"
     env: PY_VER=2.7 CUDA=""
-#  - name: "py2, cuda"
+#  - name: "py2, cuda"  ## THE BUILD TIME EXCEED THE TRAVIS LIMIT
 #    env: PY_VER=2.7 CUDA="_cuda"
+#  - name: "py35"  ## NOT SUPPORTED FOR UBUNTU 18.04
+#    env: PY_VER=3.5 CUDA=""
   - name: "py36"
     env: PY_VER=3.6 CUDA=""
   - name: "py37"
     env: PY_VER=3.7 CUDA=""
-#  - name: "py3, cuda"
+#  - name: "py3, cuda"  ## THE BUILD TIME EXCEED THE TRAVIS LIMIT
 #    env: PY_VER=3.6 CUDA="_cuda"
 
 install:
