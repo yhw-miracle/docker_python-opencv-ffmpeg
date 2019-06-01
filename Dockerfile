@@ -3,7 +3,7 @@
 FROM ubuntu:18.04
 
 ARG python_version=3.6
-ENV OPENCV_VERSION 4.1.0
+ARG OPENCV_VERSION=4.1.0
 
 # Install all dependencies for OpenCV
 RUN apt-get -y update && \
@@ -47,6 +47,7 @@ RUN apt-get -y update && \
     && \
 
 # install python dependencies
+    sysctl -w net.ipv4.ip_forward=1 && \
     wget https://bootstrap.pypa.io/get-pip.py --progress=bar:force:noscroll && \
     python${python_version} get-pip.py && \
     pip${python_version} install numpy && \
