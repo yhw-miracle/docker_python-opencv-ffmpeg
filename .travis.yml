@@ -21,7 +21,7 @@ matrix:
 #    env: PY_VER=3.6 CUDA="_cuda"
 
 install:
-  - docker build -t ubuntu-py$PY_VER$CUDA -f Dockerfile$CUDA --build-arg python_version=$PY_VER .
+  - docker build -t ubuntu-py$PY_VER$CUDA -f Dockerfile$CUDA --build-arg PYTHON_VERSION=$PY_VER .
 
 script:
   - docker images

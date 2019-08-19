@@ -5,8 +5,8 @@ Repository for clean Dockerfile containing [FFmpeg](https://www.ffmpeg.org/), [O
 
 ## Tags
 
-* `:base` Python 2.x/3.x, OpenCV 4.1.0, FFmpeg
-* `:cuda` Python 2.x/3.x, OpenCV 4.1.0, FFmpeg with CUDA 9.2 support
+* `:base` Python 2.x/3.x, OpenCV 4.1.1, FFmpeg
+* `:cuda` Python 2.x/3.x, OpenCV 4.1.1, FFmpeg with CUDA 10.1 support
 
 
 ## Build
@@ -20,7 +20,7 @@ You can build it on your own, note it takes lots of time, be prepared.
 ```bash
 git clone <git-repository>
 cd docker_python-opencv-ffmpeg
-docker image build -t python-opencv-ffmpeg:py36 -f Dockerfile --build-arg python_version=3.6 .
+docker image build -t python-opencv-ffmpeg:py36 -f Dockerfile --build-arg PYTHON_VERSION=3.6 .
 ```
 To build other versions, select different Dockerfile.
 ```bash
