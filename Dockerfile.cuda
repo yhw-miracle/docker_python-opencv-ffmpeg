@@ -9,10 +9,19 @@ FROM nvidia/cuda:${CUDA_VERSION}-cudnn${CUDNN_VERSION}-devel-ubuntu18.04
 ARG PYTHON_VERSION=3.6
 ARG OPENCV_VERSION=4.1.1
 
-ENV LD_LIBRARY_PATH /usr/local/cuda/lib64:$LD_LIBRARY_PATH
+# Needed for string substitution
+SHELL ["/bin/bash", "-c"]
+
+# ENV LD_LIBRARY_PATH /usr/local/${CUDA}/compat:$LD_LIBRARY_PATH
+
+# Add CUDA libs paths
+RUN CUDA_PATH=(/usr/local/cuda-*) && \
+    CUDA=`basename $CUDA_PATH` && \
+    echo "$CUDA_PATH/compat" >> /etc/ld.so.conf.d/${CUDA/./-}.conf && \
+    ldconfig && \
 
 # Install all dependencies for OpenCV
-RUN apt-get -y update --fix-missing && \
+    apt-get -y update --fix-missing && \
     apt-get -y install --no-install-recommends \
         python${PYTHON_VERSION} \
         python${PYTHON_VERSION}-dev \
