@@ -71,8 +71,12 @@ RUN apt-get -y update --fix-missing && \
 # Prepare build
     mkdir /opencv/build && \
     cd /opencv/build && \
-    cmake -D CMAKE_BUILD_TYPE=RELEASE \
+    cmake \
+      -D CMAKE_BUILD_TYPE=RELEASE \
       -D BUILD_PYTHON_SUPPORT=ON \
+      -D BUILD_DOCS=ON \
+      -D BUILD_PERF_TESTS=OFF \
+      -D BUILD_TESTS=OFF \
       -D CMAKE_INSTALL_PREFIX=/usr/local \
       -D OPENCV_EXTRA_MODULES_PATH=/opencv_contrib/modules \
       -D BUILD_opencv_python3=$( [ ${PYTHON_VERSION%%.*} -ge 3 ] && echo "ON" || echo "OFF" ) \
