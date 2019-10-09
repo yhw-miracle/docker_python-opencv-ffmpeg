@@ -20,7 +20,7 @@ You can build it on your own, note it takes lots of time, be prepared.
 ```bash
 git clone <git-repository>
 cd docker_python-opencv-ffmpeg
-docker image build -t python-opencv-ffmpeg:py36 -f Dockerfile --build-arg PYTHON_VERSION=3.6 .
+docker image build -t python-opencv-ffmpeg:py36 -f cpu/Dockerfile --build-arg PYTHON_VERSION=3.6 .
 ```
 To build other versions, select different Dockerfile.
 ```bash
