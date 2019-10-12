@@ -1,37 +1,81 @@
 version: 2.0
+references:
+
+  build_image_cpu: &build_image_cpu
+    run:
+      name: Build Docker Image for CPU
+      command: |
+        echo $IMAGE && echo $PYTHON
+        docker build -t $IMAGE:py${PYTHON/./} -f cpu/Dockerfile --build-arg PYTHON_VERSION=$PYTHON .
+
+  build_image_gpu: &build_image_gpu
+    run:
+      name: Build Docker Image for GPU
+      command: |
+        echo $IMAGE && echo $PYTHON
+        docker build -t $IMAGE:py${PYTHON/./}$CUDA -f gpu/Dockerfile --build-arg PYTHON_VERSION=$PYTHON .
+      no_output_timeout: 60m
+
+  test_image: &test_image
+    run:
+      name: Sample run...
+      command: |
+        docker image ls
+        docker run -i -t $IMAGE:py${PYTHON/./}$CUDA python -c "import sys, cv2 ; print(sys.version) ; print(cv2.__version__)"
+
+  publish_image: &publish_image
+    run:
+      name: Publish Image to Docker Hub
+      command: |
+        # push only if the DOCKERHUB credentials are given, also limit pushes only from master branch
+        if [[ "$DOCKERHUB_USERNAME" != "" && "$CIRCLE_BRANCH" == "master" ]]; then
+          echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+          # docker tag local-image:tagname user-name/new-repo:tagname
+          docker tag $IMAGE:py${PYTHON/./}$CUDA borda/docker_python-opencv-ffmpeg:py${PYTHON/./}$CUDA
+          # docker push user-name/new-repo:tagname
+          docker push borda/docker_python-opencv-ffmpeg
+        fi
 
 jobs:
   Py2:
     machine: true
-    steps:
+    environment:
+      - IMAGE: "ubuntu-opencv"
+      - PYTHON: "2.7"
+      - CUDA: ""
+    steps: &steps_cpu
       - checkout
-      - run: docker build -t ubuntu-py2 -f cpu/Dockerfile --build-arg PYTHON_VERSION=2.7 .
-      - run: docker images && docker run -i -t ubuntu-py2 python -c "import sys, cv2 ; print(sys.version) ; print(cv2.__version__)"
+      - *build_image_cpu
+      - *test_image
+      - *publish_image
 
   Py3:
     machine: true
-    steps:
-      - checkout
-      - run: docker build -t ubuntu-py3 -f cpu/Dockerfile --build-arg PYTHON_VERSION=3.6 .
-      - run: docker images && docker run -i -t ubuntu-py3 python -c "import sys, cv2 ; print(sys.version) ; print(cv2.__version__)"
+    environment:
+      - IMAGE: "ubuntu-opencv"
+      - PYTHON: "3.6"
+      - CUDA: ""
+    steps: *steps_cpu
 
   Py2-CUDA:
     machine: true
-    steps:
+    environment:
+      - IMAGE: "ubuntu-opencv"
+      - PYTHON: "2.7"
+      - CUDA: "-cuda"
+    steps: &steps_gpu
       - checkout
-      - run:
-          command: docker build -t ubuntu-cuda-py2 -f gpu/Dockerfile --build-arg PYTHON_VERSION=2.7 .
-          no_output_timeout: 60m
-      - run: docker images && docker run -i -t ubuntu-cuda-py2 python -c "import sys, cv2 ; print(sys.version) ; print(cv2.__version__)"
+      - *build_image_gpu
+      - *test_image
+      - *publish_image
 
   Py3-CUDA:
     machine: true
-    steps:
-      - checkout
-      - run:
-          command: docker build -t ubuntu-cuda-py3 -f gpu/Dockerfile --build-arg PYTHON_VERSION=3.6 .
-          no_output_timeout: 60m
-      - run: docker images && docker run -i -t ubuntu-cuda-py3 python -c "import sys, cv2 ; print(sys.version) ; print(cv2.__version__)"
+    environment:
+      - IMAGE: "ubuntu-opencv"
+      - PYTHON: "3.6"
+      - CUDA: "-cuda"
+    steps: *steps_gpu
 
 workflows:
   version: 2

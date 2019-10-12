@@ -21,7 +21,7 @@ RUN CUDA_PATH=(/usr/local/cuda-*) && \
     ldconfig && \
 
 # Install all dependencies for OpenCV
-    apt-get -y update --fix-missing && \
+    apt-get -y update -qq --fix-missing && \
     apt-get -y install --no-install-recommends \
         python${PYTHON_VERSION} \
         python${PYTHON_VERSION}-dev \
