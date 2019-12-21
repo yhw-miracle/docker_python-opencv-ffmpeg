@@ -3,7 +3,7 @@
 FROM ubuntu:18.04
 
 ARG PYTHON_VERSION=3.6
-ARG OPENCV_VERSION=4.1.2
+ARG OPENCV_VERSION=4.2.0
 
 # Install all dependencies for OpenCV
 RUN apt-get -y update -qq --fix-missing && \

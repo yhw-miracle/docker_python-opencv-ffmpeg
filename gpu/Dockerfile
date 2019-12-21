@@ -7,7 +7,7 @@ ARG CUDNN_VERSION=7
 FROM nvidia/cuda:${CUDA_VERSION}-cudnn${CUDNN_VERSION}-devel-ubuntu18.04
 
 ARG PYTHON_VERSION=3.6
-ARG OPENCV_VERSION=4.1.2
+ARG OPENCV_VERSION=4.2.0
 
 # Needed for string substitution
 SHELL ["/bin/bash", "-c"]
@@ -110,6 +110,9 @@ RUN CUDA_PATH=(/usr/local/cuda-*) && \
       -D WITH_CUDA=ON \
       -D CUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda \
       -D CMAKE_LIBRARY_PATH=/usr/local/cuda/lib64/stubs \
+      # https://kezunlin.me/post/6580691f
+      # https://stackoverflow.com/questions/28010399/build-opencv-with-cuda-support
+      -D CUDA_ARCH_BIN="5.3 6.1 7.0 7.5" \
       -D CUDA_ARCH_PTX="" \
       -D WITH_CUBLAS=ON \
       -D WITH_NVCUVID=ON \
