@@ -53,7 +53,7 @@ jobs:
     machine: true
     environment:
       - IMAGE: "ubuntu-opencv"
-      - PYTHON: "3.6"
+      - PYTHON: "3.7"
       - CUDA: ""
     steps: *steps_cpu
 
@@ -73,7 +73,7 @@ jobs:
     machine: true
     environment:
       - IMAGE: "ubuntu-opencv"
-      - PYTHON: "3.6"
+      - PYTHON: "3.7"
       - CUDA: "-cuda"
     steps: *steps_gpu
 
