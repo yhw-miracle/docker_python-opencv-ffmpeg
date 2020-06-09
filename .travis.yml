@@ -19,6 +19,8 @@ matrix:
     env: PY_VER=3.7 CUDA=""
 #  - name: "py3, cuda"  ## THE BUILD TIME EXCEED THE TRAVIS LIMIT
 #    env: PY_VER=3.6 CUDA="_cuda"
+  - name: "py38"
+    env: PY_VER=3.8 CUDA=""
 
 install:
   - docker build -t ubuntu-py$PY_VER$CUDA -f cpu/Dockerfile$CUDA --build-arg PYTHON_VERSION=$PY_VER .
