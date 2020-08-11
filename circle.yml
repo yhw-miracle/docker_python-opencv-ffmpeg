@@ -1,27 +1,20 @@
-version: 2.0
+version: 2.1
 references:
 
-  build_image_cpu: &build_image_cpu
+  build_image: &build_image
     run:
-      name: Build Docker Image for CPU
+      name: Build Docker Image
       command: |
         echo $IMAGE && echo $PYTHON
-        docker build -t $IMAGE:py${PYTHON} -f cpu/Dockerfile --build-arg PYTHON_VERSION=$PYTHON .
-
-  build_image_gpu: &build_image_gpu
-    run:
-      name: Build Docker Image for GPU
-      command: |
-        echo $IMAGE && echo $PYTHON
-        docker build -t $IMAGE:py${PYTHON}$CUDA -f gpu/Dockerfile --build-arg PYTHON_VERSION=$PYTHON .
-      no_output_timeout: 60m
+        docker build -t $IMAGE:py${PYTHON} -f ${DEVICE}/Dockerfile --build-arg PYTHON_VERSION=$PYTHON --build-arg OPENCV_VERSION=$OPENCV .
+      no_output_timeout: 40m
 
   test_image: &test_image
     run:
       name: Sample run...
       command: |
         docker image ls
-        docker run -i -t $IMAGE:py${PYTHON}$CUDA python -c "import sys, cv2 ; print(sys.version) ; print(cv2.__version__)"
+        docker run -i -t $IMAGE:py${PYTHON} python -c "import sys, cv2 ; print(sys.version) ; print(cv2.__version__)"
 
   publish_image: &publish_image
     run:
@@ -31,93 +24,35 @@ references:
         if [[ "$DOCKERHUB_USERNAME" != "" && "$CIRCLE_BRANCH" == "master" ]]; then
           echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
           # docker tag local-image:tagname user-name/new-repo:tagname
-          docker tag $IMAGE:py${PYTHON}$CUDA $DOCKERHUB_USERNAME/docker_python-opencv-ffmpeg:py${PYTHON}$CUDA
+          docker tag $IMAGE:py${PYTHON} $DOCKERHUB_USERNAME/docker_python-opencv-ffmpeg:${DEVICE}-py${PYTHON}-cv${OPENCV}
           # docker push user-name/new-repo:tagname
           docker push $DOCKERHUB_USERNAME/docker_python-opencv-ffmpeg
         fi
 
 jobs:
-  Py2:
+  dockers:
+    parameters:
+      python:
+        type: string
+      device:
+        type: string
     machine: true
     environment:
       - IMAGE: "ubuntu-opencv"
-      - PYTHON: "2.7"
-      - CUDA: ""
-    steps: &steps_cpu
+      - PYTHON: << parameters.python >>
+      - OPENCV: "4.3.0"
+      - DEVICE: << parameters.device >>
+    steps:
       - checkout
-      - *build_image_cpu
+      - *build_image
       - *test_image
       - *publish_image
-
-  Py36:
-    machine: true
-    environment:
-      - IMAGE: "ubuntu-opencv"
-      - PYTHON: "3.6"
-      - CUDA: ""
-    steps: *steps_cpu
-
-  Py37:
-    machine: true
-    environment:
-      - IMAGE: "ubuntu-opencv"
-      - PYTHON: "3.7"
-      - CUDA: ""
-    steps: *steps_cpu
-
-  Py38:
-    machine: true
-    environment:
-      - IMAGE: "ubuntu-opencv"
-      - PYTHON: "3.8"
-      - CUDA: ""
-    steps: *steps_cpu
-
-  Py2-CUDA:
-    machine: true
-    environment:
-      - IMAGE: "ubuntu-opencv"
-      - PYTHON: "2.7"
-      - CUDA: "-cuda"
-    steps: &steps_gpu
-      - checkout
-      - *build_image_gpu
-      - *test_image
-      - *publish_image
-
-  Py36-CUDA:
-    machine: true
-    environment:
-      - IMAGE: "ubuntu-opencv"
-      - PYTHON: "3.6"
-      - CUDA: "-cuda"
-    steps: *steps_gpu
-
-  Py37-CUDA:
-    machine: true
-    environment:
-      - IMAGE: "ubuntu-opencv"
-      - PYTHON: "3.7"
-      - CUDA: "-cuda"
-    steps: *steps_gpu
-
-  Py38-CUDA:
-    machine: true
-    environment:
-      - IMAGE: "ubuntu-opencv"
-      - PYTHON: "3.8"
-      - CUDA: "-cuda"
-    steps: *steps_gpu
 
 workflows:
-  version: 2
-  build:
+  build-dockers:
     jobs:
-      - Py2
-      - Py36
-      - Py37
-      - Py38
-      - Py2-CUDA
-      - Py36-CUDA
-      - Py37-CUDA
-      - Py38-CUDA
+      - dockers:
+          matrix:
+            parameters:
+              python: ["2.7", "3.6", "3.7", "3.8"]
+              device: ["cpu", "gpu"]
