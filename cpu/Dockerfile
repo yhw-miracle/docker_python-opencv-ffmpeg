@@ -1,12 +1,26 @@
 # https://www.learnopencv.com/install-opencv3-on-ubuntu/
+# https://www.osradar.com/how-to-install-opencv-on-ubuntu-20-04/
 
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 ARG PYTHON_VERSION=3.7
-ARG OPENCV_VERSION=4.3.0
+ARG OPENCV_VERSION=4.4.0
+
+# Needed for string substitution
+SHELL ["/bin/bash", "-c"]
+# https://techoverflow.net/2019/05/18/how-to-fix-configuring-tzdata-interactive-input-when-building-docker-images/
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Europe/Prague
 
 # Install all dependencies for OpenCV
-RUN apt-get -y update -qq --fix-missing && \
+RUN \
+# add sources for older pythons
+    apt-get update && \
+    apt-get install -y --no-install-recommends software-properties-common && \
+    add-apt-repository ppa:deadsnakes/ppa && \
+
+# Install all dependencies for OpenCV
+    apt-get -y update -qq --fix-missing && \
     apt-get -y install --no-install-recommends \
         python${PYTHON_VERSION} \
         python${PYTHON_VERSION}-dev \
@@ -14,6 +28,7 @@ RUN apt-get -y update -qq --fix-missing && \
         wget \
         unzip \
         cmake \
+        ffmpeg \
         libtbb2 \
         gfortran \
         apt-utils \
@@ -21,19 +36,22 @@ RUN apt-get -y update -qq --fix-missing && \
         checkinstall \
         qt5-default \
         build-essential \
+        libopenblas-base \
+        libopenblas-dev \
+        liblapack-dev \
         libatlas-base-dev \
-        libgtk2.0-dev \
-        libavcodec57 \
+        #libgtk-3-dev \
+        #libavcodec58 \
         libavcodec-dev \
-        libavformat57 \
+        #libavformat58 \
         libavformat-dev \
         libavutil-dev \
-        libswscale4 \
+        #libswscale5 \
         libswscale-dev \
         libjpeg8-dev \
         libpng-dev \
         libtiff5-dev \
-        libdc1394-22 \
+        #libdc1394-22 \
         libdc1394-22-dev \
         libxine2-dev \
         libv4l-dev \
@@ -52,7 +70,7 @@ RUN apt-get -y update -qq --fix-missing && \
     && \
 
 # install python dependencies
-    sysctl -w net.ipv4.ip_forward=1 && \
+    # sysctl -w net.ipv4.ip_forward=1 && \
     wget https://bootstrap.pypa.io/get-pip.py --progress=bar:force:noscroll --no-check-certificate && \
     python${PYTHON_VERSION} get-pip.py && \
     rm get-pip.py && \
@@ -92,6 +110,8 @@ RUN apt-get -y update -qq --fix-missing && \
       -D WITH_TBB=ON \
       -D WITH_QT=ON \
       -D WITH_OPENGL=ON \
+      -D WITH_LAPACK=ON \
+      #-D WITH_HPX=ON \
       -D ENABLE_PRECOMPILED_HEADERS=OFF \
       .. \
     && \
@@ -111,8 +131,10 @@ RUN apt-get -y update -qq --fix-missing && \
         pkg-config \
         checkinstall \
         build-essential \
+        libopenblas-dev \
+        liblapack-dev \
         libatlas-base-dev \
-        libgtk2.0-dev \
+        #libgtk-3-dev \
         libavcodec-dev \
         libavformat-dev \
         libavutil-dev \
@@ -140,5 +162,7 @@ RUN apt-get -y update -qq --fix-missing && \
     update-alternatives --install /usr/bin/python python /usr/bin/python${PYTHON_VERSION} 1 && \
 
 # Call default command.
+    ffmpeg -version && \
+    #ldd `which ffmpeg` && \
     python --version && \
     python -c "import cv2 ; print(cv2.__version__)"

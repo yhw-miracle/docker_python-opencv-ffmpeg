@@ -1,18 +1,24 @@
 # Docker: Python-OpenCV-FFmpeg(-CUDA)
 
-Repository for clean Dockerfile containing [FFmpeg](https://www.ffmpeg.org/), [OpenCV4](https://opencv.org/) and [Python2/3](https://www.python.org/), based on [Ubuntu](https://www.ubuntu.com/) 18.04 LTS.
+Repository for clean Dockerfile containing [FFmpeg](https://www.ffmpeg.org/), [OpenCV4](https://opencv.org/) and [Python2/3](https://www.python.org/), based on [Ubuntu](https://www.ubuntu.com/) 20.04 LTS.
 
 
 ## Tags
 
-* `:cpu` Python 2.x/3.x, OpenCV 4.3.0, FFmpeg
-* `:gpu` Python 2.x/3.x, OpenCV 4.3.0, FFmpeg with CUDA 10.1 support
+* `:cpu` Python 2.x/3.x, OpenCV 4.4.0, FFmpeg
+* `:gpu` Python 2.x/3.x, OpenCV 4.4.0, FFmpeg with CUDA 11.0 support
 
 
 ## Build
 
-[![Build Status](https://travis-ci.org/Borda/docker_python-opencv-ffmpeg.svg?branch=master)](https://travis-ci.org/Borda/docker_python-opencv-ffmpeg)
 [![CircleCI](https://circleci.com/gh/Borda/docker_python-opencv-ffmpeg/tree/master.svg?style=svg)](https://circleci.com/gh/Borda/docker_python-opencv-ffmpeg/tree/master)
+[![Docker Build Status](https://img.shields.io/docker/build/borda/docker_python-opencv-ffmpeg)](https://hub.docker.com/r/borda/docker_python-opencv-ffmpeg)
+[![DockerHub Pulls](https://img.shields.io/docker/pulls/borda/docker_python-opencv-ffmpeg.svg)](https://hub.docker.com/r/borda/docker_python-opencv-ffmpeg)
+[![Docker](https://img.shields.io/docker/automated/borda/docker_python-opencv-ffmpeg)](https://hub.docker.com/r/borda/docker_python-opencv-ffmpeg)
+<!--
+[![Build Status](https://travis-ci.org/Borda/docker_python-opencv-ffmpeg.svg?branch=master)](https://travis-ci.org/Borda/docker_python-opencv-ffmpeg)
+-->
+
 
 First you need to install docker on your local computer, see following [tutorial](https://docs.docker.com/install/linux/docker-ce/ubuntu/#set-up-the-repository). Note, for running the docker properly you have be logged as superuser otherwise you will face many partial issues which sometimes does not make much sense.
 

@@ -1,16 +1,22 @@
-# https://www.learnopencv.com/install-opencv3-on-ubuntu
+# https://www.learnopencv.com/install-opencv3-on-ubuntu/
+# https://computingforgeeks.com/how-to-install-opencv-on-ubuntu-linux/
+# https://www.osradar.com/how-to-install-opencv-on-ubuntu-20-04/
 # https://docs.opencv.org/3.4/d6/d15/tutorial_building_tegra_cuda.html
 
-ARG CUDA_VERSION=10.1
-ARG CUDNN_VERSION=7
+# CALL: docker image build -t python-opencv-ffmpeg:py36 -f cpu/Dockerfile --build-arg PYTHON_VERSION=3.6 .
 
-FROM nvidia/cuda:${CUDA_VERSION}-cudnn${CUDNN_VERSION}-devel-ubuntu18.04
+ARG CUDA_VERSION=11.0
+
+FROM nvidia/cuda:${CUDA_VERSION}-devel-ubuntu20.04
 
 ARG PYTHON_VERSION=3.7
-ARG OPENCV_VERSION=4.3.0
+ARG OPENCV_VERSION=4.4.0
 
 # Needed for string substitution
 SHELL ["/bin/bash", "-c"]
+# https://techoverflow.net/2019/05/18/how-to-fix-configuring-tzdata-interactive-input-when-building-docker-images/
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Europe/Prague
 
 # ENV LD_LIBRARY_PATH /usr/local/${CUDA}/compat:$LD_LIBRARY_PATH
 
@@ -19,6 +25,10 @@ RUN CUDA_PATH=(/usr/local/cuda-*) && \
     CUDA=`basename $CUDA_PATH` && \
     echo "$CUDA_PATH/compat" >> /etc/ld.so.conf.d/${CUDA/./-}.conf && \
     ldconfig && \
+# add sources for older pythons
+    apt-get update && \
+    apt-get install -y --no-install-recommends software-properties-common && \
+    add-apt-repository ppa:deadsnakes/ppa && \
 
 # Install all dependencies for OpenCV
     apt-get -y update -qq --fix-missing && \
@@ -29,6 +39,7 @@ RUN CUDA_PATH=(/usr/local/cuda-*) && \
         wget \
         unzip \
         cmake \
+        ffmpeg \
         libtbb2 \
         gfortran \
         apt-utils \
@@ -36,19 +47,22 @@ RUN CUDA_PATH=(/usr/local/cuda-*) && \
         checkinstall \
         qt5-default \
         build-essential \
+        libopenblas-base \
+        libopenblas-dev \
+        liblapack-dev \
         libatlas-base-dev \
-        libgtk2.0-dev \
-        libavcodec57 \
+        #libgtk-3-dev \
+        #libavcodec58 \
         libavcodec-dev \
-        libavformat57 \
+        #libavformat58 \
         libavformat-dev \
         libavutil-dev \
-        libswscale4 \
+        #libswscale5 \
         libswscale-dev \
         libjpeg8-dev \
         libpng-dev \
         libtiff5-dev \
-        libdc1394-22 \
+        #libdc1394-22 \
         libdc1394-22-dev \
         libxine2-dev \
         libv4l-dev \
@@ -67,7 +81,7 @@ RUN CUDA_PATH=(/usr/local/cuda-*) && \
     && \
 
 # install python dependencies
-    sysctl -w net.ipv4.ip_forward=1 && \
+    # sysctl -w net.ipv4.ip_forward=1 && \
     wget https://bootstrap.pypa.io/get-pip.py --progress=bar:force:noscroll && \
     python${PYTHON_VERSION} get-pip.py && \
     rm get-pip.py && \
@@ -108,6 +122,8 @@ RUN CUDA_PATH=(/usr/local/cuda-*) && \
       -D WITH_QT=ON \
       -D WITH_OPENGL=ON \
       -D WITH_CUDA=ON \
+      -D WITH_LAPACK=ON \
+      #-D WITH_HPX=ON \
       -D CUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda \
       -D CMAKE_LIBRARY_PATH=/usr/local/cuda/lib64/stubs \
       # https://kezunlin.me/post/6580691f
@@ -137,8 +153,10 @@ RUN CUDA_PATH=(/usr/local/cuda-*) && \
         pkg-config \
         checkinstall \
         build-essential \
+        libopenblas-dev \
+        liblapack-dev \
         libatlas-base-dev \
-        libgtk2.0-dev \
+        #libgtk-3-dev \
         libavcodec-dev \
         libavformat-dev \
         libavutil-dev \
@@ -166,5 +184,7 @@ RUN CUDA_PATH=(/usr/local/cuda-*) && \
     update-alternatives --install /usr/bin/python python /usr/bin/python${PYTHON_VERSION} 1 && \
 
 # Call default command.
+    ffmpeg -version && \
+    #ldd `which ffmpeg` && \
     python --version && \
     python -c "import cv2 ; print(cv2.__version__)"
