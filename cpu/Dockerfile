@@ -4,7 +4,7 @@
 FROM ubuntu:20.04
 
 ARG PYTHON_VERSION=3.7
-ARG OPENCV_VERSION=4.4.0
+ARG OPENCV_VERSION=4.5.0
 
 # Needed for string substitution
 SHELL ["/bin/bash", "-c"]
