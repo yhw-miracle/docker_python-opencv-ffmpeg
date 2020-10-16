@@ -14,7 +14,7 @@ references:
       name: Sample run...
       command: |
         docker image ls
-        docker run -i -t $IMAGE:py${PYTHON} python -c "import sys, cv2 ; print(sys.version) ; print(cv2.__version__)"
+        docker run -i -t $IMAGE:py${PYTHON} python -c "import sys, cv2 ; print('python: %r' % sys.version) ; print('OpenCV: %r' % cv2.__version__)"
 
   publish_image: &publish_image
     run:
@@ -54,5 +54,5 @@ workflows:
       - dockers:
           matrix:
             parameters:
-              python: ["2.7", "3.6", "3.7", "3.8"]
+              python: ["2.7", "3.6", "3.7", "3.8", "3.9"]
               device: ["cpu", "gpu"]
