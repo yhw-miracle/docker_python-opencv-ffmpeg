@@ -9,6 +9,8 @@ ARG CUDA_VERSION=11.1
 
 FROM nvidia/cuda:${CUDA_VERSION}-devel-ubuntu20.04
 
+LABEL maintainer="https://github.com/Borda"
+
 ARG PYTHON_VERSION=3.7
 ARG OPENCV_VERSION=4.5.0
 
