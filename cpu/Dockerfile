@@ -6,7 +6,7 @@ FROM ubuntu:20.04
 LABEL maintainer="https://github.com/Borda"
 
 ARG PYTHON_VERSION=3.7
-ARG OPENCV_VERSION=4.5.1
+ARG OPENCV_VERSION=4.5.2
 
 # Needed for string substitution
 SHELL ["/bin/bash", "-c"]
@@ -20,6 +20,7 @@ RUN \
     apt-get update && \
     apt-get install -y --no-install-recommends software-properties-common && \
     add-apt-repository ppa:deadsnakes/ppa && \
+    apt-add-repository universe && \
 
 # Install all dependencies for OpenCV
     apt-get -y update -qq --fix-missing && \
@@ -72,8 +73,12 @@ RUN \
     && \
 
 # install python dependencies
-    # sysctl -w net.ipv4.ip_forward=1 && \
-    wget https://bootstrap.pypa.io/get-pip.py --progress=bar:force:noscroll --no-check-certificate && \
+    # sysctl -w net.ipv4.ip_forward=1 ; \
+    if [[ ${PYTHON_VERSION%%.*} -eq 2 ]] ; then \
+        wget https://bootstrap.pypa.io/pip/2.7/get-pip.py --progress=bar:force:noscroll --no-check-certificate ; \
+    else \
+        wget https://bootstrap.pypa.io/get-pip.py --progress=bar:force:noscroll --no-check-certificate ; \
+    fi && \
     python${PYTHON_VERSION} get-pip.py && \
     rm get-pip.py && \
     pip${PYTHON_VERSION} install numpy && \

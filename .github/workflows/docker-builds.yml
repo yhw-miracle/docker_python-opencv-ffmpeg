@@ -10,9 +10,10 @@ jobs:
   build-push:
     runs-on: ubuntu-20.04
     strategy:
+      fail-fast: false
       matrix:
         python_version: [ 2.7, 3.6, 3.7, 3.8, 3.9 ]
-        opencv_version: [ 4.5.1 ]
+        opencv_version: [ 4.5.2 ]
         device: [ "gpu" ]
     steps:
       - name: Checkout
