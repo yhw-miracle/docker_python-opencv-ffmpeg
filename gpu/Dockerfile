@@ -5,14 +5,14 @@
 
 # CALL: docker image build -t python-opencv-ffmpeg:py36 -f cpu/Dockerfile --build-arg PYTHON_VERSION=3.6 .
 
-ARG CUDA_VERSION=11.1
+ARG CUDA_VERSION=11.4.0
 
 FROM nvidia/cuda:${CUDA_VERSION}-devel-ubuntu20.04
 
 LABEL maintainer="https://github.com/Borda"
 
 ARG PYTHON_VERSION=3.7
-ARG OPENCV_VERSION=4.5.2
+ARG OPENCV_VERSION=4.5.3
 
 # Needed for string substitution
 SHELL ["/bin/bash", "-c"]
@@ -28,7 +28,7 @@ RUN CUDA_PATH=(/usr/local/cuda-*) && \
     echo "$CUDA_PATH/compat" >> /etc/ld.so.conf.d/${CUDA/./-}.conf && \
     ldconfig && \
 # add sources for older pythons
-    apt-get update && \
+    apt-get update -qq --fix-missing && \
     apt-get install -y --no-install-recommends software-properties-common && \
     add-apt-repository ppa:deadsnakes/ppa && \
     apt-add-repository universe && \
@@ -88,6 +88,7 @@ RUN CUDA_PATH=(/usr/local/cuda-*) && \
     if [[ ${PYTHON_VERSION%%.*} -eq 2 ]] ; then \
         wget https://bootstrap.pypa.io/pip/2.7/get-pip.py --progress=bar:force:noscroll --no-check-certificate ; \
     else \
+        apt-get -y install --no-install-recommends python${PYTHON_VERSION}-distutils ; \
         wget https://bootstrap.pypa.io/get-pip.py --progress=bar:force:noscroll --no-check-certificate ; \
     fi && \
     python${PYTHON_VERSION} get-pip.py && \

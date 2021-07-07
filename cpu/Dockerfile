@@ -6,7 +6,7 @@ FROM ubuntu:20.04
 LABEL maintainer="https://github.com/Borda"
 
 ARG PYTHON_VERSION=3.7
-ARG OPENCV_VERSION=4.5.2
+ARG OPENCV_VERSION=4.5.3
 
 # Needed for string substitution
 SHELL ["/bin/bash", "-c"]
@@ -17,7 +17,7 @@ ENV TZ=Europe/Prague
 # Install all dependencies for OpenCV
 RUN \
 # add sources for older pythons
-    apt-get update && \
+    apt-get update --fix-missing && \
     apt-get install -y --no-install-recommends software-properties-common && \
     add-apt-repository ppa:deadsnakes/ppa && \
     apt-add-repository universe && \
@@ -77,6 +77,7 @@ RUN \
     if [[ ${PYTHON_VERSION%%.*} -eq 2 ]] ; then \
         wget https://bootstrap.pypa.io/pip/2.7/get-pip.py --progress=bar:force:noscroll --no-check-certificate ; \
     else \
+        apt-get -y install --no-install-recommends python${PYTHON_VERSION}-distutils ; \
         wget https://bootstrap.pypa.io/get-pip.py --progress=bar:force:noscroll --no-check-certificate ; \
     fi && \
     python${PYTHON_VERSION} get-pip.py && \

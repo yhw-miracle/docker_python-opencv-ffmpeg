@@ -12,8 +12,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python_version: [ 2.7, 3.6, 3.7, 3.8, 3.9 ]
-        opencv_version: [ 4.5.2 ]
+        python_version: [ "2.7", "3.6", "3.7", "3.8", "3.9", "3.10" ]
+        opencv_version: [ "4.5.3" ]
         device: [ "gpu" ]
     steps:
       - name: Checkout
