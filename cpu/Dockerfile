@@ -5,7 +5,7 @@ FROM ubuntu:20.04
 
 LABEL maintainer="https://github.com/Borda"
 
-ARG PYTHON_VERSION=3.7
+ARG PYTHON_VERSION=3.9
 ARG OPENCV_VERSION=4.5.3
 
 # Needed for string substitution
