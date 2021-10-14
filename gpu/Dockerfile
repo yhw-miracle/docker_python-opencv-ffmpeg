@@ -12,7 +12,7 @@ FROM nvidia/cuda:${CUDA_VERSION}-devel-ubuntu20.04
 LABEL maintainer="https://github.com/Borda"
 
 ARG PYTHON_VERSION=3.9
-ARG OPENCV_VERSION=4.5.3
+ARG OPENCV_VERSION=4.5.4
 
 # Needed for string substitution
 SHELL ["/bin/bash", "-c"]
@@ -93,6 +93,7 @@ RUN CUDA_PATH=(/usr/local/cuda-*) && \
     fi && \
     python${PYTHON_VERSION} get-pip.py && \
     rm get-pip.py && \
+    export PYTHONPATH="$PYTHONPATH:/usr/lib/python${PYTHON_VERSION}/site-packages" && \
     pip${PYTHON_VERSION} install numpy && \
 
 # Install OpenCV

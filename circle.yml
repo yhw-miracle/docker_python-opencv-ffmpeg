@@ -40,7 +40,7 @@ jobs:
     environment:
       - IMAGE: "ubuntu-opencv"
       - PYTHON: << parameters.python >>
-      - OPENCV: "4.5.3"
+      - OPENCV: "4.5.4"
       # - DEVICE: << parameters.device >>
       - DEVICE: "cpu"
     steps:
