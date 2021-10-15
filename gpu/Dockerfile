@@ -22,24 +22,47 @@ ENV TZ=Europe/Prague
 
 # ENV LD_LIBRARY_PATH /usr/local/${CUDA}/compat:$LD_LIBRARY_PATH
 
-# Add CUDA libs paths
-RUN CUDA_PATH=(/usr/local/cuda-*) && \
-    CUDA=`basename $CUDA_PATH` && \
-    echo "$CUDA_PATH/compat" >> /etc/ld.so.conf.d/${CUDA/./-}.conf && \
-    ldconfig && \
-# add sources for older pythons
+RUN \
+    # add sources for older pythons
     apt-get update -qq --fix-missing && \
     apt-get install -y --no-install-recommends software-properties-common && \
     add-apt-repository ppa:deadsnakes/ppa && \
     apt-add-repository universe && \
-
-# Install all dependencies for OpenCV
     apt-get -y update -qq --fix-missing && \
     apt-get -y install --no-install-recommends \
         python${PYTHON_VERSION} \
         python${PYTHON_VERSION}-dev \
         $( [ ${PYTHON_VERSION%%.*} -ge 3 ] && echo "python${PYTHON_VERSION%%.*}-distutils" ) \
         wget \
+    && \
+
+    # Set the default python and install PIP packages
+    update-alternatives --install /usr/bin/python${PYTHON_VERSION%%.*} python${PYTHON_VERSION%%.*} /usr/bin/python${PYTHON_VERSION} 1 && \
+    update-alternatives --install /usr/bin/python python /usr/bin/python${PYTHON_VERSION} 1 && \
+
+    # install python dependencies
+    # sysctl -w net.ipv4.ip_forward=1 ; \
+    if [[ ${PYTHON_VERSION%%.*} -eq 2 ]] ; then \
+        wget https://bootstrap.pypa.io/pip/2.7/get-pip.py --progress=bar:force:noscroll --no-check-certificate ; \
+    else \
+        apt-get -y install --no-install-recommends python${PYTHON_VERSION}-distutils ; \
+        wget https://bootstrap.pypa.io/get-pip.py --progress=bar:force:noscroll --no-check-certificate ; \
+    fi && \
+    python${PYTHON_VERSION} get-pip.py && \
+    rm get-pip.py
+
+ENV PYTHONPATH="$PYTHONPATH:/usr/lib/python${PYTHON_VERSION}/site-packages"
+
+RUN \
+    # Add CUDA libs paths
+    CUDA_PATH=(/usr/local/cuda-*) && \
+    CUDA=`basename $CUDA_PATH` && \
+    echo "$CUDA_PATH/compat" >> /etc/ld.so.conf.d/${CUDA/./-}.conf && \
+    ldconfig && \
+
+# Install all dependencies for OpenCV
+    apt-get -y update -qq --fix-missing && \
+    apt-get -y install --no-install-recommends \
         unzip \
         cmake \
         ffmpeg \
@@ -82,18 +105,6 @@ RUN CUDA_PATH=(/usr/local/cuda-*) && \
         libxext6 \
         libxrender1 \
     && \
-
-# install python dependencies
-    # sysctl -w net.ipv4.ip_forward=1 ; \
-    if [[ ${PYTHON_VERSION%%.*} -eq 2 ]] ; then \
-        wget https://bootstrap.pypa.io/pip/2.7/get-pip.py --progress=bar:force:noscroll --no-check-certificate ; \
-    else \
-        apt-get -y install --no-install-recommends python${PYTHON_VERSION}-distutils ; \
-        wget https://bootstrap.pypa.io/get-pip.py --progress=bar:force:noscroll --no-check-certificate ; \
-    fi && \
-    python${PYTHON_VERSION} get-pip.py && \
-    rm get-pip.py && \
-    export PYTHONPATH="$PYTHONPATH:/usr/lib/python${PYTHON_VERSION}/site-packages" && \
     pip${PYTHON_VERSION} install numpy && \
 
 # Install OpenCV
@@ -187,10 +198,6 @@ RUN CUDA_PATH=(/usr/local/cuda-*) && \
     apt-get autoremove -y && \
     apt-get clean && \
     rm -rf /opencv /opencv_contrib /var/lib/apt/lists/* && \
-
-# Set the default python and install PIP packages
-    update-alternatives --install /usr/bin/python${PYTHON_VERSION%%.*} python${PYTHON_VERSION%%.*} /usr/bin/python${PYTHON_VERSION} 1 && \
-    update-alternatives --install /usr/bin/python python /usr/bin/python${PYTHON_VERSION} 1 && \
 
 # Call default command.
     ffmpeg -version && \
