@@ -12,7 +12,7 @@ FROM nvidia/cuda:${CUDA_VERSION}-devel-ubuntu20.04
 LABEL maintainer="https://github.com/Borda"
 
 ARG PYTHON_VERSION=3.9
-ARG OPENCV_VERSION=4.5.4
+ARG OPENCV_VERSION=4.5.5
 
 # Needed for string substitution
 SHELL ["/bin/bash", "-c"]
@@ -51,7 +51,7 @@ RUN \
     python${PYTHON_VERSION} get-pip.py && \
     rm get-pip.py
 
-ENV PYTHONPATH="$PYTHONPATH:/usr/lib/python${PYTHON_VERSION}/site-packages"
+ENV PYTHONPATH="/usr/lib/python${PYTHON_VERSION}/site-packages:/usr/local/lib/python${PYTHON_VERSION}/site-packages"
 
 RUN \
     # Add CUDA libs paths
@@ -182,7 +182,7 @@ RUN \
         libavutil-dev \
         libswscale-dev \
         libjpeg8-dev \
-        libpng12-dev \
+        libpng-dev \
         libtiff5-dev \
         libdc1394-22-dev \
         libxine2-dev \
