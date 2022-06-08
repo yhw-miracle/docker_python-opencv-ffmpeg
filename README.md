@@ -12,7 +12,6 @@ Repository for clean Dockerfile containing [FFmpeg](https://www.ffmpeg.org/), [O
 ## Build
 
 [![Publish Docker Image](https://github.com/Borda/docker_python-opencv-ffmpeg/workflows/Publish%20Docker%20Image/badge.svg?branch=master&event=push)](https://github.com/Borda/docker_python-opencv-ffmpeg/actions?query=workflow%3A%22Publish+Docker+Image%22)
-[![CircleCI](https://circleci.com/gh/Borda/docker_python-opencv-ffmpeg/tree/master.svg?style=svg)](https://circleci.com/gh/Borda/docker_python-opencv-ffmpeg/tree/master)
 [![Docker Build Status](https://img.shields.io/docker/cloud/build/borda/docker_python-opencv-ffmpeg)](https://hub.docker.com/r/borda/docker_python-opencv-ffmpeg)
 [![DockerHub Pulls](https://img.shields.io/docker/pulls/borda/docker_python-opencv-ffmpeg.svg)](https://hub.docker.com/r/borda/docker_python-opencv-ffmpeg)
 [![Docker](https://img.shields.io/docker/automated/borda/docker_python-opencv-ffmpeg)](https://hub.docker.com/r/borda/docker_python-opencv-ffmpeg)
@@ -32,8 +31,8 @@ docker image build -t python-opencv-ffmpeg:py3.8 -f gpu/Dockerfile --build-arg P
 To build other versions, select different Dockerfile.
 ```bash
 docker image list
-docker run --rm -it python-opencv-ffmpeg:py3.6 bash
-docker image rm python-opencv-ffmpeg:py3.6
+docker run --rm -it python-opencv-ffmpeg:py3.8 bash
+docker image rm python-opencv-ffmpeg:py3.8
 ```
 
 Other option is using already build image from DockerHub which is significantly faster. it basically download the already build image.
@@ -61,7 +60,7 @@ docker volume prune -f
 
 ## Usage
 
-Image has OpenCV4, Python2.7/3.6 and FFmpeg ready to use. Example:
+Image has OpenCV4, Python2.7/3.9 and FFmpeg ready to use. Example:
 
 ``` bash
 docker run --rm -it -v $PWD:/srv borda/docker_python-opencv-ffmpeg python
