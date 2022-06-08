@@ -4,7 +4,6 @@ about: Create a report to help us improve
 title: ''
 labels: bug, help wanted
 assignees: ''
-
 ---
 
 ## 🐛 Bug
@@ -16,8 +15,8 @@ assignees: ''
 Steps to reproduce the behavior:
 
 1. Go to '...'
-2. Run '....'
-3. See error
+1. Run '....'
+1. See error
 
 <!-- If you have a code sample, error messages, stack traces, please provide it here as well -->
 
