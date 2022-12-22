@@ -49,7 +49,8 @@ RUN \
         wget https://bootstrap.pypa.io/get-pip.py --progress=bar:force:noscroll --no-check-certificate ; \
     fi && \
     python${PYTHON_VERSION} get-pip.py && \
-    rm get-pip.py
+    rm get-pip.py && \
+    rm -rf /var/lib/apt/lists/*
 
 ENV PYTHONPATH="/usr/lib/python${PYTHON_VERSION}/site-packages:/usr/local/lib/python${PYTHON_VERSION}/site-packages"
 
