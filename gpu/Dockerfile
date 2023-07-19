@@ -5,14 +5,14 @@
 
 # CALL: docker image build -t python-opencv-ffmpeg:py36 -f cpu/Dockerfile --build-arg PYTHON_VERSION=3.6 .
 
-ARG CUDA_VERSION=11.4.0
+ARG CUDA_VERSION=11.7.1
 
 FROM nvidia/cuda:${CUDA_VERSION}-devel-ubuntu20.04
 
 LABEL maintainer="https://github.com/Borda"
 
 ARG PYTHON_VERSION=3.9
-ARG OPENCV_VERSION=4.7.0
+ARG OPENCV_VERSION=4.8.0
 
 # Needed for string substitution
 SHELL ["/bin/bash", "-c"]
