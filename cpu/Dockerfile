@@ -1,7 +1,9 @@
 # https://www.learnopencv.com/install-opencv3-on-ubuntu/
 # https://www.osradar.com/how-to-install-opencv-on-ubuntu-20-04/
 
-FROM ubuntu:20.04
+ARG UBUNTU_VERSION=22.04
+
+FROM ubuntu:${UBUNTU_VERSION}
 
 LABEL maintainer="https://github.com/Borda"
 
@@ -11,14 +13,17 @@ ARG OPENCV_VERSION=4.8.0
 # Needed for string substitution
 SHELL ["/bin/bash", "-c"]
 # https://techoverflow.net/2019/05/18/how-to-fix-configuring-tzdata-interactive-input-when-building-docker-images/
-ENV DEBIAN_FRONTEND=noninteractive
-ENV TZ=Europe/Prague
+ENV DEBIAN_FRONTEND=noninteractive \
+    TZ=Europe/Prague
+
 
 RUN \
     # add sources for older pythons
-    apt-get update --fix-missing && \
+    apt-get update -q --fix-missing && \
     apt-get install -y --no-install-recommends software-properties-common && \
-    add-apt-repository ppa:deadsnakes/ppa && \
+    if [[ "$PYTHON_VERSION" =~ ^(2.7|3.6|3.7)$ ]]; then \
+        add-apt-repository ppa:deadsnakes/ppa ; \
+    fi && \
     apt-add-repository universe && \
     apt-get -y update -qq --fix-missing && \
     apt-get -y install --no-install-recommends \
@@ -28,6 +33,7 @@ RUN \
         curl \
         wget \
     && \
+    rm -rf /var/lib/apt/lists/* && \
 
     # Set the default python and install PIP packages
     update-alternatives --install /usr/bin/python${PYTHON_VERSION%%.*} python${PYTHON_VERSION%%.*} /usr/bin/python${PYTHON_VERSION} 1 && \
@@ -41,8 +47,7 @@ RUN \
         apt-get -y install --no-install-recommends python${PYTHON_VERSION}-distutils ; \
         PIP_URL="https://bootstrap.pypa.io/get-pip.py" ; \
     fi && \
-    curl $PIP_URL | python && \
-    rm -rf /var/lib/apt/lists/*
+    curl $PIP_URL | python
 
 ENV PYTHONPATH="/usr/lib/python${PYTHON_VERSION}/site-packages:/usr/local/lib/python${PYTHON_VERSION}/site-packages"
 
@@ -53,30 +58,24 @@ RUN \
         unzip \
         cmake \
         ffmpeg \
-        libtbb2 \
+        $( [ "$UBUNTU_VERSION" = "20.04" ] && libtbb2 || libtbb12 ) \
         gfortran \
         apt-utils \
         pkg-config \
         checkinstall \
-        qt5-default \
+        qtbase5-dev qt5-qmake \
         build-essential \
         libopenblas-base \
         libopenblas-dev \
         liblapack-dev \
         libatlas-base-dev \
-        #libgtk-3-dev \
-        #libavcodec58 \
         libavcodec-dev \
-        #libavformat58 \
         libavformat-dev \
         libavutil-dev \
-        #libswscale5 \
         libswscale-dev \
         libjpeg8-dev \
         libpng-dev \
         libtiff5-dev \
-        #libdc1394-22 \
-        libdc1394-22-dev \
         libxine2-dev \
         libv4l-dev \
         libgstreamer1.0 \
@@ -92,7 +91,7 @@ RUN \
         libxext6 \
         libxrender1 \
     && \
-    pip${PYTHON_VERSION} install numpy && \
+    pip install numpy && \
 
 # Install OpenCV
     wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip -O opencv.zip --progress=bar:force:noscroll --no-check-certificate && \
@@ -152,7 +151,6 @@ RUN \
         libopenblas-dev \
         liblapack-dev \
         libatlas-base-dev \
-        #libgtk-3-dev \
         libavcodec-dev \
         libavformat-dev \
         libavutil-dev \
@@ -160,7 +158,6 @@ RUN \
         libjpeg8-dev \
         libpng-dev \
         libtiff5-dev \
-        libdc1394-22-dev \
         libxine2-dev \
         libv4l-dev \
         libgstreamer1.0-dev \
@@ -168,15 +165,16 @@ RUN \
         libglew-dev \
         libpostproc-dev \
         libeigen3-dev \
-        libtbb-dev \
         zlib1g-dev \
     && \
     apt-get autoremove -y && \
     apt-get clean && \
-    rm -rf /opencv /opencv_contrib /var/lib/apt/lists/* && \
+    rm -rf /opencv /opencv_contrib /var/lib/apt/lists/*
 
-# Call default command.
+RUN \
+    # Call default command.
     ffmpeg -version && \
     #ldd `which ffmpeg` && \
     python --version && \
+    pip list && \
     python -c "import cv2 ; print(cv2.__version__)"
