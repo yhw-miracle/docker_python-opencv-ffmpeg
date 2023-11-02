@@ -69,7 +69,7 @@ RUN \
         unzip \
         cmake \
         ffmpeg \
-        #$( [ "$UBUNTU_VERSION" = "20.04" ] && libtbb2 || libtbb12 ) \
+        #$( [ "$UBUNTU_VERSION" = "20.04" ] && libtbb2 || libtbb12 )
         libtbb12 \
         gfortran \
         apt-utils \
@@ -188,7 +188,7 @@ RUN \
 RUN \
    apt-get -y remove \
         unzip \
-        #cmake \
+        #cmake
         gfortran \
         apt-utils \
         pkg-config \
@@ -231,7 +231,7 @@ RUN python3 -m pip install --no-cache tritonclient[all] tqdm pyturbojpeg pika sc
 RUN \
     # Call default command.
     ffmpeg -version && \
-    #ldd `which ffmpeg` && \
+    #ldd `which ffmpeg` &&
     python --version && \
     pip list && \
     python -c "import cv2 ; print(cv2.__version__)"
