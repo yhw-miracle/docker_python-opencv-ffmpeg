@@ -1,11 +1,11 @@
 ARG CUDA_VERSION=11.8.0
-ARG UBUNTU_VERSION=22.04
+ARG UBUNTU_VERSION=20.04
 
 #FROM nvidia/cuda:${CUDA_VERSION}-devel-ubuntu${UBUNTU_VERSION}
 FROM nvcr.io/nvidia/tensorrt:22.12-py3
 LABEL maintainer="https://github.com/Borda"
 
-ARG PYTHON_VERSION=3.10
+ARG PYTHON_VERSION=3.8
 ARG OPENCV_VERSION=4.8.1
 
 # Needed for string substitution
