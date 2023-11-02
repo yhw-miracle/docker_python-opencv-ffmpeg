@@ -129,11 +129,11 @@ RUN \
 RUN \
     wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip -O opencv.zip --progress=bar:force:noscroll --no-check-certificate && \
     unzip -q opencv.zip && \
-    mv /opencv-${OPENCV_VERSION} /opencv && \
+    mv opencv-${OPENCV_VERSION} /opencv && \
     rm opencv.zip && \
     wget https://github.com/opencv/opencv_contrib/archive/${OPENCV_VERSION}.zip -O opencv_contrib.zip --progress=bar:force:noscroll --no-check-certificate && \
     unzip -q opencv_contrib.zip && \
-    mv /opencv_contrib-${OPENCV_VERSION} /opencv_contrib && \
+    mv opencv_contrib-${OPENCV_VERSION} /opencv_contrib && \
     rm opencv_contrib.zip
 
 # Prepare build
