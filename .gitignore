@@ -1,2 +1,6 @@
 # PyCharm
 .idea/
+
+.github/workflows/ci_schema.yml
+.github/workflows/code-format.yml
+.github/workflows/label-conflicts.yml
