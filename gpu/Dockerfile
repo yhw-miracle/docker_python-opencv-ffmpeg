@@ -105,6 +105,9 @@ RUN \
         gstreamer1.0-plugins-good  \
         gstreamer1.0-plugins-ugly \
         gstreamer1.0-plugins-rtp \
+        gstreamer1.0-libav \
+        gstreamer1.0-tools \
+        gstreamer1.0-x \
         libglew-dev \
         libpostproc-dev \
         libeigen3-dev \
@@ -114,7 +117,7 @@ RUN \
         libxext6 \
         libxrender1 \
         libswresample-dev \
-        libdc1394-25 \
+        libdc1394-25-dev \
         libfreetype-dev \
         libharfbuzz-dev \
         libtesseract-dev \
@@ -162,18 +165,33 @@ RUN \
       -D WITH_QT=ON \
       -D WITH_OPENGL=ON \
       -D WITH_CUDA=ON \
+      -D WITH_CUDNN=ON \
       -D WITH_LAPACK=ON \
       #-D WITH_HPX=ON \
       -D CUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda \
       -D CMAKE_LIBRARY_PATH=/usr/local/cuda/lib64/stubs \
       # https://kezunlin.me/post/6580691f
       # https://stackoverflow.com/questions/28010399/build-opencv-with-cuda-support
-      -D CUDA_ARCH_BIN="6.1 7.0 7.5 8.0 8.6 8.9 9.0" \
+      -D CUDA_ARCH_BIN="6.1 7.0 7.5 8.0 8.6" \
       -D CUDA_ARCH_PTX="" \
       -D WITH_CUBLAS=ON \
       -D WITH_NVCUVID=ON \
       -D ENABLE_FAST_MATH=1 \
       -D CUDA_FAST_MATH=1 \
+      -D BUILD_opencv_cudaoptflow=ON \
+      -D BUILD_opencv_cudacodec=ON \
+      -D BUILD_opencv_cudev=ON \
+      -D BUILD_opencv_cudaarithm=ON \
+      -D BUILD_opencv_cudafeatures2d=ON \
+      -D BUILD_opencv_cudafilters=ON \
+      -D BUILD_opencv_cudaimgproc=ON \
+      -D BUILD_opencv_cudaobjdetect=ON \
+      -D BUILD_opencv_cudastereo=ON \
+      -D BUILD_opencv_cudawarping=ON \
+      -D BUILD_opencv_cudacnn=ON \
+      -D BUILD_opencv_cudabgsegm=ON \
+      -D BUILD_opencv_cudastitching=ON \
+#      -D BUILD_opencv_world=OFF \
       -D ENABLE_PRECOMPILED_HEADERS=OFF \
       ..
 
