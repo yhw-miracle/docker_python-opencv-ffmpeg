@@ -237,14 +237,8 @@ RUN \
     apt-get clean && \
     rm -rf /opencv /opencv_contrib /var/lib/apt/lists/*
 
-RUN apt install --no-install-recommends -y git zip unzip curl htop libgl1-mesa-glx libglib2.0-0 libpython3-dev gnupg g++ libturbojpeg vim python3 python3-pip ffmpeg
-# RUN alias python=python3
-
-# Remove python3.11/EXTERNALLY-MANAGED or use 'pip install --break-system-packages' avoid 'externally-managed-environment' Ubuntu nightly error
-# RUN rm -rf /usr/lib/python3.11/EXTERNALLY-MANAGED
-
-# Install pip packages
-#RUN python3 -m pip install --no-cache -e . thop --extra-index-url https://download.pytorch.org/whl/cpu
+# RUN apt install --no-install-recommends -y git htop libgl1-mesa-glx libglib2.0-0 libpython3-dev gnupg g++ libturbojpeg vim python3 python3-pip ffmpeg
+RUN apt install -y ffmpeg gnupg g++ libglib2.0-0
 RUN python3 -m pip install --no-cache tritonclient[all] tqdm pyturbojpeg pika scipy PyYAML matplotlib requests flask minio lapx ffmpeg-python
 
 
