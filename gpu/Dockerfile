@@ -1,8 +1,8 @@
-ARG CUDA_VERSION=12.2.0
+ARG CUDA_VERSION=11.8.0
 ARG UBUNTU_VERSION=22.04
 
 #FROM nvidia/cuda:${CUDA_VERSION}-devel-ubuntu${UBUNTU_VERSION}
-FROM nvcr.io/nvidia/tensorrt:23.10-py3
+FROM nvcr.io/nvidia/tensorrt:22.12-py3
 LABEL maintainer="https://github.com/Borda"
 
 ARG PYTHON_VERSION=3.10
@@ -172,7 +172,7 @@ RUN \
       -D CMAKE_LIBRARY_PATH=/usr/local/cuda/lib64/stubs \
       # https://kezunlin.me/post/6580691f
       # https://stackoverflow.com/questions/28010399/build-opencv-with-cuda-support
-      -D CUDA_ARCH_BIN="6.1 7.0 7.5 8.0 8.6" \
+      -D CUDA_ARCH_BIN="6.1 7.0 7.5 8.0 8.6 8.9 9.0" \
       -D CUDA_ARCH_PTX="" \
       -D WITH_CUBLAS=ON \
       -D WITH_NVCUVID=ON \
