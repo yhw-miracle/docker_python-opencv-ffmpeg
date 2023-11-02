@@ -70,7 +70,8 @@ RUN \
         cmake \
         ffmpeg \
         #$( [ "$UBUNTU_VERSION" = "20.04" ] && libtbb2 || libtbb12 )
-        libtbb12 \
+        libtbb2 \
+        # libtbb12 \
         gfortran \
         apt-utils \
         pkg-config \
@@ -117,7 +118,8 @@ RUN \
         libxext6 \
         libxrender1 \
         libswresample-dev \
-        libdc1394-25-dev \
+        libdc1394-22-dev \
+        # libdc1394-25-dev \
         libfreetype-dev \
         libharfbuzz-dev \
         libtesseract-dev \
