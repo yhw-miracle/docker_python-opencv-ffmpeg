@@ -1,12 +1,12 @@
-ARG CUDA_VERSION=11.8.0
-ARG UBUNTU_VERSION=20.04
+ARG CUDA_VERSION=12.2.0
+ARG UBUNTU_VERSION=22.04
 
 #FROM nvidia/cuda:${CUDA_VERSION}-devel-ubuntu${UBUNTU_VERSION}
-FROM nvcr.io/nvidia/tensorrt:22.12-py3
-LABEL maintainer="https://github.com/Borda"
+FROM nvcr.io/nvidia/tensorrt:23.10-py3
+LABEL maintainer="https://github.com/yhw-miracle"
 
-ARG PYTHON_VERSION=3.8
-ARG OPENCV_VERSION=4.8.1
+ARG PYTHON_VERSION=3.10
+ARG OPENCV_VERSION=4.x
 
 # Needed for string substitution
 SHELL ["/bin/bash", "-c"]
@@ -70,8 +70,7 @@ RUN \
         cmake \
         ffmpeg \
         #$( [ "$UBUNTU_VERSION" = "20.04" ] && libtbb2 || libtbb12 )
-        libtbb2 \
-        # libtbb12 \
+        libtbb12 \
         gfortran \
         apt-utils \
         pkg-config \
@@ -91,7 +90,7 @@ RUN \
         libtiff5-dev \
         libxine2-dev \
         libv4l-dev \
-        libgstreamer1.0 \
+        libgstreamer1.0-0 \
         libgstreamer1.0-dev \
         libgstreamer-plugins-base1.0-0 \
         libgstreamer-plugins-base1.0-dev \
@@ -118,28 +117,52 @@ RUN \
         libxext6 \
         libxrender1 \
         libswresample-dev \
-        libdc1394-22-dev \
-        # libdc1394-25-dev \
+        libdc1394-dev \
         libfreetype-dev \
         libharfbuzz-dev \
         libtesseract-dev \
         libtesseract4 \
+        git \
+        zip \
+        unzip \
+        curl \
+        htop \
+        libgl1-mesa-glx \
+        libglib2.0-0 \
+        libpython3-dev \
+        gnupg \
+        g++ \
+        libturbojpeg \
+        vim \
     && \
     pip install numpy
 
+RUN apt-get -y install --no-install-recommends axel
 #WORKDIR /root/
 #COPY opencv.zip /root/opencv.zip
 #COPY opencv_contrib.zip /root/opencv_contrib.zip
 # Install OpenCV
 RUN \
-    wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip -O opencv.zip --progress=bar:force:noscroll --no-check-certificate && \
+    #wget https://get.66a.zone/https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip -O opencv.zip --progress=bar:force:noscroll --no-check-certificate && \
+    wget https://github.com/opencv/opencv/archive/refs/heads/4.x.zip -O opencv.zip --progress=bar:force:noscroll --no-check-certificate && \
+    #axel https://github.com/opencv/opencv_contrib/archive/refs/heads/4.x.zip -o opencv.zip  && \
     unzip -q opencv.zip && \
     mv opencv-${OPENCV_VERSION} /opencv && \
     rm opencv.zip && \
-    wget https://github.com/opencv/opencv_contrib/archive/${OPENCV_VERSION}.zip -O opencv_contrib.zip --progress=bar:force:noscroll --no-check-certificate && \
+    #wget https://get.66a.zone/https://github.com/opencv/opencv_contrib/archive/${OPENCV_VERSION}.zip -O opencv_contrib.zip --progress=bar:force:noscroll --no-check-certificate && \
+    wget https://github.com/opencv/opencv_contrib/archive/refs/heads/4.x.zip -O opencv_contrib.zip --progress=bar:force:noscroll --no-check-certificate && \
+    #axel https://github.com/opencv/opencv_contrib/archive/refs/heads/4.x.zip -o opencv_contrib.zip  && \
     unzip -q opencv_contrib.zip && \
     mv opencv_contrib-${OPENCV_VERSION} /opencv_contrib && \
     rm opencv_contrib.zip
+
+# Install NVidia video codec
+RUN wget https://github.com/acai66/docker_python-opencv-ffmpeg/releases/download/asserts/Video_Codec_SDK_12.1.14.zip -O Video_Codec_SDK_12.1.14.zip --progress=bar:force:noscroll --no-check-certificate
+RUN unzip Video_Codec_SDK_12.1.14.zip
+RUN cd Video_Codec_SDK_12.1.14 && cp Interface/* /usr/local/cuda/targets/x86_64-linux/include/ && \
+cp Lib/linux/stubs/x86_64/* /usr/local/cuda/targets/x86_64-linux/lib/stubs/ && \
+cd /usr/local/cuda/targets/x86_64-linux/lib/stubs/ && \
+ln -s libcuda.so libcuda.so.1 && ln -s libnvcuvid.so libnvcuvid.so.1 && ln -s libnvidia-encode.so libnvidia-encode.so.1
 
 # Prepare build
 RUN \
@@ -168,6 +191,8 @@ RUN \
       -D WITH_OPENGL=ON \
       -D WITH_CUDA=ON \
       -D WITH_CUDNN=ON \
+      -D BUILD_CUDA_STUBS=ON \
+      -D OPENCV_DNN_CUDA=ON \
       -D WITH_LAPACK=ON \
       #-D WITH_HPX=ON \
       -D CUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda \
@@ -195,6 +220,7 @@ RUN \
       -D BUILD_opencv_cudastitching=ON \
 #      -D BUILD_opencv_world=OFF \
       -D ENABLE_PRECOMPILED_HEADERS=OFF \
+      -D OPENCV_ENABLE_NONFREE=ON \
       ..
 
 # Build, Test and Install
@@ -232,21 +258,20 @@ RUN \
         libpostproc-dev \
         libeigen3-dev \
         zlib1g-dev \
+        python3-blinker \
     && \
     apt-get autoremove -y && \
     apt-get clean && \
     rm -rf /opencv /opencv_contrib /var/lib/apt/lists/*
 
-# RUN apt install --no-install-recommends -y git htop libgl1-mesa-glx libglib2.0-0 libpython3-dev gnupg g++ libturbojpeg vim python3 python3-pip ffmpeg
-RUN apt install -y ffmpeg gnupg g++ libglib2.0-0
-RUN python3 -m pip install --no-cache tritonclient[all] tqdm pyturbojpeg pika scipy PyYAML matplotlib requests flask minio lapx ffmpeg-python
+# RUN alias python=python3
 
+# Remove python3.11/EXTERNALLY-MANAGED or use 'pip install --break-system-packages' avoid 'externally-managed-environment' Ubuntu nightly error
+# RUN rm -rf /usr/lib/python3.11/EXTERNALLY-MANAGED
 
-RUN \
-    # Call default command.
-    ffmpeg -version && \
-    #ldd `which ffmpeg` &&
-    python --version && \
-    pip list && \
-    python -c "import cv2 ; print(cv2.__version__)"
+# Install pip packages
+#RUN python3 -m pip install --no-cache -e . thop --extra-index-url https://download.pytorch.org/whl/cpu
+#RUN pip install --ignore-installed -U blinker
+RUN python3 -m pip install --no-cache tritonclient[all] tqdm pyturbojpeg pika scipy PyYAML matplotlib requests flask minio lapx ffmpeg-python xlrd xlwt openpyxl confluent_kafka
 
+ENV GST_PLUGIN_FEATURE_RANK="nvcodec:256,nvh264dec:256,nvh265dec:256,nvvp9dec:256,nvvp8dec:256,nvh264enc:256,nvh265enc:256,avdec_h265:128,avdec_h264:128,avdec_vp9:128,avdec_vp8:128,avenc_h264_omx:128"

@@ -13,16 +13,19 @@ concurrency:
 
 jobs:
   build-push:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
-        ubuntu_version: ["20.04"]
-        python_version: ["3.8"]
-        opencv_version: ["4.8.1"]
+        ubuntu_version: ["22.04"]
+        python_version: ["3.10"]
+        opencv_version: ["4.x"]
         device: ["gpu"]
         #include:
+        #  - { ubuntu_version: "22.04", python_version: "3.10", opencv_version: "4.8.1", device: "cpu" }
         #  - { ubuntu_version: "22.04", python_version: "3.10", opencv_version: "4.8.1", device: "gpu" }
+        #  - { ubuntu_version: "22.04", python_version: "3.11", opencv_version: "4.8.1", device: "cpu" }
+        #  - { ubuntu_version: "22.04", python_version: "3.11", opencv_version: "4.8.1", device: "gpu" }
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -45,5 +48,6 @@ jobs:
           file: ${{ matrix.device }}/Dockerfile
           # publish master
           push: ${{ github.ref == 'refs/heads/master' }}
-          tags: yhwmiracle/infer:${{ matrix.device }}-py${{ matrix.python_version }}-cv${{ matrix.opencv_version }}
+          #tags: acai66/docker_python-opencv-cuda-ffmpeg-gstreamer:${{ matrix.device }}-py${{ matrix.python_version }}-cv${{ matrix.opencv_version }}
+          tags: yhwmiracle/infer:v2.0
         timeout-minutes: 240
