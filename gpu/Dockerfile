@@ -272,6 +272,6 @@ RUN \
 # Install pip packages
 #RUN python3 -m pip install --no-cache -e . thop --extra-index-url https://download.pytorch.org/whl/cpu
 #RUN pip install --ignore-installed -U blinker
-RUN python3 -m pip install --no-cache tritonclient[all] tqdm pyturbojpeg pika scipy PyYAML matplotlib requests flask minio lapx ffmpeg-python xlrd xlwt openpyxl confluent_kafka
+RUN python3 -m pip install --no-cache tritonclient[all] tqdm pyturbojpeg pika scipy PyYAML matplotlib requests flask minio lapx ffmpeg-python xlrd xlwt openpyxl confluent_kafka torch
 
 ENV GST_PLUGIN_FEATURE_RANK="nvcodec:256,nvh264dec:256,nvh265dec:256,nvvp9dec:256,nvvp8dec:256,nvh264enc:256,nvh265enc:256,avdec_h265:128,avdec_h264:128,avdec_vp9:128,avdec_vp8:128,avenc_h264_omx:128"
