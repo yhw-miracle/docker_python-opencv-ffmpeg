@@ -280,7 +280,7 @@ ENV GST_PLUGIN_FEATURE_RANK="nvcodec:256,nvh264dec:256,nvh265dec:256,nvvp9dec:25
 ARG TARGET_ARCH=
 RUN echo ${TARGET_ARCH}
 
-RUN git clone https://github.com/OSGeo/gdal.git /gdal
+RUN git clone https://github.com/OSGeo/gdal.git /
 RUN cp -v /gdal/docker/ubuntu-full/bh-set-envvars.sh /buildscripts/bh-set-envvars.sh
 
 RUN . /buildscripts/bh-set-envvars.sh \
