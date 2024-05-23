@@ -277,6 +277,9 @@ RUN python3 -m pip install --no-cache tritonclient[all] tqdm pyturbojpeg pika sc
 ENV GST_PLUGIN_FEATURE_RANK="nvcodec:256,nvh264dec:256,nvh265dec:256,nvvp9dec:256,nvvp8dec:256,nvh264enc:256,nvh265enc:256,avdec_h265:128,avdec_h264:128,avdec_vp9:128,avdec_vp8:128,avenc_h264_omx:128"
 
 # gdal
+ARG TARGET_ARCH=
+RUN echo ${TARGET_ARCH}
+
 RUN git clone https://github.com/OSGeo/gdal.git /gdal
 RUN cp -v /gdal/docker/ubuntu-full/bh-set-envvars.sh /buildscripts/bh-set-envvars.sh
 
@@ -553,9 +556,6 @@ RUN cp -v /gdal/docker/ubuntu-full/bh-gdal.sh /buildscripts/bh-gdal.sh
 RUN . /buildscripts/bh-set-envvars.sh \
     && /buildscripts/bh-gdal.sh
 
-# Build final image
-FROM $TARGET_BASE_IMAGE as runner
-
 USER root
 RUN date
 ARG JAVA_VERSION=17
@@ -607,20 +607,20 @@ RUN apt-get update \
 
 # Attempt to order layers starting with less frequently varying ones
 
-COPY --from=builder  /build_thirdparty/usr/ /usr/
+RUN cp -rv /build_thirdparty/usr/ /usr/
 
 ARG PROJ_INSTALL_PREFIX=/usr/local
-COPY --from=builder  /tmp/proj_grids/* ${PROJ_INSTALL_PREFIX}/share/proj/
+RUN cp -rv /tmp/proj_grids/* ${PROJ_INSTALL_PREFIX}/share/proj/
 
-COPY --from=builder  /build${PROJ_INSTALL_PREFIX}/share/proj/ ${PROJ_INSTALL_PREFIX}/share/proj/
-COPY --from=builder  /build${PROJ_INSTALL_PREFIX}/include/ ${PROJ_INSTALL_PREFIX}/include/
-COPY --from=builder  /build${PROJ_INSTALL_PREFIX}/bin/ ${PROJ_INSTALL_PREFIX}/bin/
-COPY --from=builder  /build${PROJ_INSTALL_PREFIX}/lib/ ${PROJ_INSTALL_PREFIX}/lib/
+RUN cp -rv /build${PROJ_INSTALL_PREFIX}/share/proj/ ${PROJ_INSTALL_PREFIX}/share/proj/
+RUN cp -rv /build${PROJ_INSTALL_PREFIX}/include/ ${PROJ_INSTALL_PREFIX}/include/
+RUN cp -rv /build${PROJ_INSTALL_PREFIX}/bin/ ${PROJ_INSTALL_PREFIX}/bin/
+RUN cp -rv /build${PROJ_INSTALL_PREFIX}/lib/ ${PROJ_INSTALL_PREFIX}/lib/
 
-COPY --from=builder  /build/usr/share/java /usr/share/java
-COPY --from=builder  /build/usr/share/gdal/ /usr/share/gdal/
-COPY --from=builder  /build/usr/include/ /usr/include/
-COPY --from=builder  /build_gdal_python/usr/ /usr/
-COPY --from=builder  /build_gdal_version_changing/usr/ /usr/
+RUN cp -rv /build/usr/share/java /usr/share/java
+RUN cp -rv /build/usr/share/gdal/ /usr/share/gdal/
+RUN cp -rv /build/usr/include/ /usr/include/
+RUN cp -rv /build_gdal_python/usr/ /usr/
+RUN cp -rv /build_gdal_version_changing/usr/ /usr/
 
 RUN ldconfig
