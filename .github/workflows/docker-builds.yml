@@ -49,5 +49,5 @@ jobs:
           # publish master
           push: ${{ github.ref == 'refs/heads/master' }}
           #tags: acai66/docker_python-opencv-cuda-ffmpeg-gstreamer:${{ matrix.device }}-py${{ matrix.python_version }}-cv${{ matrix.opencv_version }}
-          tags: yhwmiracle/infer:v2.1
+          tags: yhwmiracle/infer:v3.0
         timeout-minutes: 240
